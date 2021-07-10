@@ -1,0 +1,17 @@
+.MuiDialog-paper {
+    border-radius: 8px !important;
+}
+
+
+#post-input{
+    border: 0 !important;
+}
+#post-input:focus{
+    border: 0 !important;
+}
+#post-input::after{
+    border: 0 !important;
+}
+.input-field {
+    margin:0;
+}
