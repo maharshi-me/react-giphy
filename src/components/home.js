@@ -77,7 +77,7 @@ class Home extends Component {
                                 </h5>
                             </div>
                             
-                            <DialogContent style={{width:"500px"}}>
+                            <DialogContent>
                                 <Textarea
                                     id="post-input"
                                     placeholder="What's on your mind?"
