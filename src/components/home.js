@@ -178,7 +178,7 @@ class Home extends Component {
         let gifsList = null
         if(this.state.gifsLoading){
             gifsList = 
-            <Col s={12}>
+            <Col s={12} style={{textAlign:"center"}}>
                 <Preloader
                 active
                 color="blue"
