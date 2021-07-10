@@ -9,7 +9,10 @@
 #post-input:focus{
     border: 0 !important;
 }
-#post-input::after{
+#post-input:focus-visible{
+    border: 0 !important;
+}
+#post-input:focus-within{
     border: 0 !important;
 }
 .input-field {
