@@ -21,3 +21,50 @@
 .MuiDialog-paperWidthSm {
     width: 500px;
 }
+
+  /* label underline focus color */
+input:focus {
+    border-bottom: 0px!important;
+    box-shadow: 0 0 0 0!important;
+  }
+  /* valid color */
+ input.valid {
+    border-bottom: 0px !important;
+    box-shadow: 0 0 0 0 !important;
+  }
+  /* invalid color */
+input.invalid {
+    border-bottom: 0px !important;
+    box-shadow: 0 1px 0 0 #f44336 !important;
+  }
+input{
+    border: 0 !important;
+    margin: 0 !important;
+    height: 2rem !important;
+}
+
+
+textarea:focus {
+    border-bottom: 0px!important;
+    box-shadow: 0 0 0 0!important;
+  }
+  /* valid color */
+ textarea.valid {
+    border-bottom: 0px !important;
+    box-shadow: 0 0 0 0 !important;
+  }
+  /* invalid color */
+textarea.invalid {
+    border-bottom: 0px !important;
+    box-shadow: 0 0 0 0 !important;
+  }
+textarea{
+    border: 0 !important;
+}
+
+.posts .card-content{
+    padding: 15px 0px 15px 0px;
+}
+.nav-wrapper{
+    display: none;
+}
