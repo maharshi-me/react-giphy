@@ -10,6 +10,8 @@ import Chip from '@material-ui/core/Chip';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import InputBase from '@material-ui/core/InputBase';
 import './home.css';
+import InfiniteScroll from "react-infinite-scroll-component";
+
 
 const GiphyApiKey = "EQh0DeRaL6DoipBy8vrLyDzp1hF7f2ej"
 
@@ -109,7 +111,7 @@ class Home extends Component {
             currentText:"",
             currentGif:"",
             gifQuery:"",
-            gifsLoading:false,
+            hasMoreGifs:true,
             gifs:[],
             posts:[
                 {
@@ -121,90 +123,65 @@ class Home extends Component {
         this.controller = null
     }
     componentDidMount(){
-        this.fetchTrendingGifs();
-    }
-    fetchTrendingGifs(){
-        const trendingUrl = `https://api.giphy.com/v1/gifs/trending?api_key=${GiphyApiKey}&limit=12&rating=g`
-        this.setState({gifsLoading:true})
-        fetch(trendingUrl)
-        .then(response => response.json())
-        .then(data => 
-            {
-                let gifs = []
-                data.data.forEach(gif => {
-                    gifs = [...gifs, {small:gif["images"]["downsized_medium"]["url"],original:gif["images"]["downsized_medium"]["url"]}]
-                });
-                this.setState({gifs:gifs, gifsLoading:false})
-            })
-        .catch(function(err) {
-            console.error(` Err: ${err}`);
-        });
+        this.fetchMoreGifs()
     }
     handleGifQueryChange = (e) => {
-        this.setState({gifQuery:e.target.value, gifsLoading:true})
-        // const controller = new AbortController()
-        // const signal = controller.signal
-        if (this.controller){
-            this.controller.abort()
-        }
-        if (e.target.value === ""){
-            this.fetchTrendingGifs();
-            return
-        }
-        this.controller = new AbortController()
-        const searchUrl = `https://api.giphy.com/v1/gifs/search?api_key=${GiphyApiKey}&limit=12&rating=g&q=${e.target.value}`
-        fetch(searchUrl,{method:"get", signal:this.controller.signal})
-        .then(response => response.json())
-        .then(data => 
-            {
-                let gifs = []
-                data.data.forEach(gif => {
-                    gifs = [...gifs, {small:gif["images"]["downsized_medium"]["url"],original:gif["images"]["downsized_medium"]["url"]}]
-                });
-                this.setState({gifs:gifs, gifsLoading:false})
-            })
-        .catch(function(err) {
-            console.error(` Err: ${err}`);
-        });
+        this.setState({gifQuery:e.target.value, gifs:[], hasMore:true}, ()=>this.fetchMoreGifs())
     }
     handleClose = () => {
         this.setState({open:false})
     }
     addPost = () => {
-        this.setState({posts:[{text:this.state.currentText,gif:this.state.currentGif}, ...this.state.posts], currentText:"", currentGif:"", open:false})
+        this.setState({posts:[{text:this.state.currentText,gif:this.state.currentGif}, ...this.state.posts], currentText:"", currentGif:"", open:false, gifs:[], hasMoreGifs:true})
+    }
+    fetchMoreGifs = () => {
+        console.log('here')
+        if (this.controller){
+            this.controller.abort()
+        }
+        
+        this.controller = new AbortController()
+        let searchUrl = `https://api.giphy.com/v1/gifs/search?api_key=${GiphyApiKey}&limit=12&rating=g&q=${this.state.gifQuery}&offset=${this.state.gifs.length}`
+        if (this.state.gifQuery === ""){
+            searchUrl = `https://api.giphy.com/v1/gifs/trending?api_key=${GiphyApiKey}&limit=12&rating=g&offset=${this.state.gifs.length}`
+        }
+        console.log(searchUrl)
+        fetch(searchUrl,{method:"get", signal:this.controller.signal})
+        .then(response => response.json())
+        .then(data => 
+            {
+                let gifs = this.state.gifs
+                data.data.forEach(gif => {
+                    gifs = [...gifs, {small:gif["images"]["downsized_medium"]["url"],original:gif["images"]["downsized_medium"]["url"]}]
+                });
+                let hasMoreGifs = false
+                if(data.pagination.total_count >= gifs.length){
+                    hasMoreGifs = true
+                }
+                this.setState({gifs:gifs, hasMoreGifs:hasMoreGifs})
+            })
+        .catch(function(err) {
+            console.error(` Err: ${err}`);
+        });
     }
     render() {
         console.log(this.state)
-        let gifsList = null
-        if(this.state.gifsLoading){
-            gifsList = 
-            <Col s={12} style={{textAlign:"center"}}>
-                <Preloader
-                active
-                color="blue"
-                flashing={false}
-                size="small"
-                />
-            </Col>
+        // let gifsList = null
+        // if(this.state.gifsLoading){
+        //     gifsList = 
             
-        }
-        else{
-            gifsList = this.state.gifs.map((gif, index) => {
-                return(
-                    <Col key={index} s={12}>
-                        <img style={{cursor:"pointer"}} width="100%" src={gif.small} alt={"Gif"} onClick={() => this.setState({currentGif:gif.original, isGifPage:false})}></img>
-                    </Col>
-                )
-            })
-        }
-        
-        
+        // }
+        let gifsList = this.state.gifs.map((gif, index) => {
+            return(
+                <Col key={index} s={12}>
+                    <img style={{cursor:"pointer"}} width="100%" src={gif.small} alt={"Gif"} onClick={() => this.setState({currentGif:gif.original, isGifPage:false})}></img>
+                </Col>
+            )
+        })
         return (
             <>
                 <Navbar style={{backgroundColor:"#1771E6"}} />
                 <div className="container" style={{maxWidth:"600px"}}>
-
-                    
                         <Card style={myStyle.mainCard}>
                             <Row style={myStyle.noMargin}>
                                 <Col s={12} style={myStyle.noPadding}>
@@ -242,7 +219,27 @@ class Home extends Component {
                                 <DialogContent>
                                 
                                     <Row>
-                                        {gifsList}
+                                        <InfiniteScroll
+                                            dataLength={this.state.gifs.length}
+                                            next={this.fetchMoreGifs}
+                                            hasMore={this.state.hasMoreGifs}
+                                            loader={<Col s={12} style={{textAlign:"center"}}>
+                                                        <Preloader
+                                                        active
+                                                        color="blue"
+                                                        flashing={false}
+                                                        size="small"
+                                                        />
+                                                    </Col>}
+                                            height={400}
+                                            endMessage={
+                                                <p style={{ textAlign: "center" }}>
+                                                <b>Yay! You have seen it all</b>
+                                                </p>
+                                            }
+                                            >
+                                                {gifsList}
+                                        </InfiniteScroll>
                                     </Row>
                                 </DialogContent>
                             </>
