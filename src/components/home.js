@@ -111,7 +111,7 @@ class Home extends Component {
             currentText:"",
             currentGif:"",
             gifQuery:"",
-            hasMoreGifs:true,
+            hasMore:true,
             gifs:[],
             posts:[
                 {
@@ -132,7 +132,7 @@ class Home extends Component {
         this.setState({open:false})
     }
     addPost = () => {
-        this.setState({posts:[{text:this.state.currentText,gif:this.state.currentGif}, ...this.state.posts], currentText:"", currentGif:"", open:false, gifs:[], hasMoreGifs:true})
+        this.setState({posts:[{text:this.state.currentText,gif:this.state.currentGif}, ...this.state.posts], currentText:"", currentGif:"", open:false, gifs:[], hasMore:true})
     }
     fetchMoreGifs = () => {
         console.log('here')
@@ -154,11 +154,12 @@ class Home extends Component {
                 data.data.forEach(gif => {
                     gifs = [...gifs, {small:gif["images"]["downsized_medium"]["url"],original:gif["images"]["downsized_medium"]["url"]}]
                 });
-                let hasMoreGifs = false
-                if(data.pagination.total_count >= gifs.length){
-                    hasMoreGifs = true
+                console.log(data.pagination.total_count)
+                let hasMore = false
+                if(data.pagination.total_count > gifs.length){
+                    hasMore = true
                 }
-                this.setState({gifs:gifs, hasMoreGifs:hasMoreGifs})
+                this.setState({gifs:gifs, hasMore:hasMore})
             })
         .catch(function(err) {
             console.error(` Err: ${err}`);
@@ -222,7 +223,7 @@ class Home extends Component {
                                         <InfiniteScroll
                                             dataLength={this.state.gifs.length}
                                             next={this.fetchMoreGifs}
-                                            hasMore={this.state.hasMoreGifs}
+                                            hasMore={this.state.hasMore}
                                             loader={<Col s={12} style={{textAlign:"center"}}>
                                                         <Preloader
                                                         active
