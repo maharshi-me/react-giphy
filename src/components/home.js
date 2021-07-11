@@ -115,8 +115,8 @@ class Home extends Component {
             gifs:[],
             posts:[
                 {
-                    "text":"This is default post",
-                    "gif":""
+                    "text":"This is a GIF post",
+                    "gif":"https://media4.giphy.com/media/xUPGGDNsLvqsBOhuU0/giphy.gif?cid=0cce06c0u06q7befgiqrz4knv88s5duzb3ch7jsud9rc7oe6&rid=giphy.gif&ct=g"
                 },
             ]
         }
@@ -132,14 +132,26 @@ class Home extends Component {
         this.setState({open:false})
     }
     addPost = () => {
-        this.setState({posts:[{text:this.state.currentText,gif:this.state.currentGif}, ...this.state.posts], currentText:"", currentGif:"", open:false, gifs:[], hasMore:true})
+        this.setState({
+            posts:[
+                {
+                    text:this.state.currentText,
+                    gif:this.state.currentGif
+                },
+                ...this.state.posts
+            ], 
+            currentText:"", 
+            currentGif:"", 
+            open:false, 
+            gifs:[], 
+            hasMore:false, 
+            gifQuery:""
+        }, () => this.fetchMoreGifs())
     }
     fetchMoreGifs = () => {
-        console.log('here')
         if (this.controller){
             this.controller.abort()
         }
-        
         this.controller = new AbortController()
         let searchUrl = `https://api.giphy.com/v1/gifs/search?api_key=${GiphyApiKey}&limit=12&rating=g&q=${this.state.gifQuery}&offset=${this.state.gifs.length}`
         if (this.state.gifQuery === ""){
@@ -154,7 +166,6 @@ class Home extends Component {
                 data.data.forEach(gif => {
                     gifs = [...gifs, {small:gif["images"]["downsized_medium"]["url"],original:gif["images"]["downsized_medium"]["url"]}]
                 });
-                console.log(data.pagination.total_count)
                 let hasMore = false
                 if(data.pagination.total_count > gifs.length){
                     hasMore = true
@@ -166,12 +177,6 @@ class Home extends Component {
         });
     }
     render() {
-        console.log(this.state)
-        // let gifsList = null
-        // if(this.state.gifsLoading){
-        //     gifsList = 
-            
-        // }
         let gifsList = this.state.gifs.map((gif, index) => {
             return(
                 <Col key={index} s={12}>
@@ -226,16 +231,16 @@ class Home extends Component {
                                             hasMore={this.state.hasMore}
                                             loader={<Col s={12} style={{textAlign:"center"}}>
                                                         <Preloader
-                                                        active
-                                                        color="blue"
-                                                        flashing={false}
-                                                        size="small"
+                                                            active
+                                                            color="blue"
+                                                            flashing={false}
+                                                            size="small"
                                                         />
                                                     </Col>}
                                             height={400}
                                             endMessage={
                                                 <p style={{ textAlign: "center" }}>
-                                                <b>Yay! You have seen it all</b>
+                                                    <b>Yay! You have seen it all</b>
                                                 </p>
                                             }
                                             >
