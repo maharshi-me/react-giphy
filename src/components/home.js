@@ -13,7 +13,7 @@ import './home.css';
 import InfiniteScroll from "react-infinite-scroll-component";
 
 
-const GiphyApiKey = "EQh0DeRaL6DoipBy8vrLyDzp1hF7f2ej"
+const GiphyApiKey = "gFBhTjmjkKGnwjAyDjbnCdnPdngPBRa2"
 
 const myStyle = {
     mainCard:{
