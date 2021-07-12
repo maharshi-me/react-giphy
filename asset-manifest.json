@@ -1,20 +1,20 @@
 {
   "files": {
     "main.css": "/react-giphy/static/css/main.362a802f.chunk.css",
-    "main.js": "/react-giphy/static/js/main.1af90157.chunk.js",
-    "main.js.map": "/react-giphy/static/js/main.1af90157.chunk.js.map",
+    "main.js": "/react-giphy/static/js/main.e1dcaae7.chunk.js",
+    "main.js.map": "/react-giphy/static/js/main.e1dcaae7.chunk.js.map",
     "runtime-main.js": "/react-giphy/static/js/runtime-main.72287018.js",
     "runtime-main.js.map": "/react-giphy/static/js/runtime-main.72287018.js.map",
-    "static/js/2.1825cadc.chunk.js": "/react-giphy/static/js/2.1825cadc.chunk.js",
-    "static/js/2.1825cadc.chunk.js.map": "/react-giphy/static/js/2.1825cadc.chunk.js.map",
+    "static/js/2.297c5400.chunk.js": "/react-giphy/static/js/2.297c5400.chunk.js",
+    "static/js/2.297c5400.chunk.js.map": "/react-giphy/static/js/2.297c5400.chunk.js.map",
     "index.html": "/react-giphy/index.html",
     "static/css/main.362a802f.chunk.css.map": "/react-giphy/static/css/main.362a802f.chunk.css.map",
-    "static/js/2.1825cadc.chunk.js.LICENSE.txt": "/react-giphy/static/js/2.1825cadc.chunk.js.LICENSE.txt"
+    "static/js/2.297c5400.chunk.js.LICENSE.txt": "/react-giphy/static/js/2.297c5400.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.72287018.js",
-    "static/js/2.1825cadc.chunk.js",
+    "static/js/2.297c5400.chunk.js",
     "static/css/main.362a802f.chunk.css",
-    "static/js/main.1af90157.chunk.js"
+    "static/js/main.e1dcaae7.chunk.js"
   ]
 }
