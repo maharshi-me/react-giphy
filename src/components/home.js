@@ -1,5 +1,5 @@
 import React, { Component, useState } from 'react';
-import { Navbar, Row, Col, Card, Button, Textarea, Preloader} from 'react-materialize';
+import { Navbar, Row, Col, Card, Button, Preloader} from 'react-materialize';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -120,7 +120,7 @@ class Home extends Component {
                 },
             ]
         }
-        this.controller = null
+        this.apiProcess = null
     }
     componentDidMount(){
         this.fetchMoreGifs()
@@ -149,32 +149,33 @@ class Home extends Component {
         }, () => this.fetchMoreGifs())
     }
     fetchMoreGifs = () => {
-        if (this.controller){
-            this.controller.abort()
+        if(this.apiProcess){
+            clearTimeout(this.apiProcess)
         }
-        this.controller = new AbortController()
-        let searchUrl = `https://api.giphy.com/v1/gifs/search?api_key=${GiphyApiKey}&limit=12&rating=g&q=${this.state.gifQuery}&offset=${this.state.gifs.length}`
-        if (this.state.gifQuery === ""){
-            searchUrl = `https://api.giphy.com/v1/gifs/trending?api_key=${GiphyApiKey}&limit=12&rating=g&offset=${this.state.gifs.length}`
-        }
-        console.log(searchUrl)
-        fetch(searchUrl,{method:"get", signal:this.controller.signal})
-        .then(response => response.json())
-        .then(data => 
-            {
-                let gifs = this.state.gifs
-                data.data.forEach(gif => {
-                    gifs = [...gifs, {small:gif["images"]["downsized_medium"]["url"],original:gif["images"]["downsized_medium"]["url"]}]
-                });
-                let hasMore = false
-                if(data.pagination.total_count > gifs.length){
-                    hasMore = true
-                }
-                this.setState({gifs:gifs, hasMore:hasMore})
-            })
-        .catch(function(err) {
-            console.error(` Err: ${err}`);
-        });
+        this.apiProcess = setTimeout(() => {
+            let searchUrl = `https://api.giphy.com/v1/gifs/search?api_key=${GiphyApiKey}&limit=3&rating=g&q=${this.state.gifQuery}&offset=${this.state.gifs.length}`
+            if (this.state.gifQuery === ""){
+                searchUrl = `https://api.giphy.com/v1/gifs/trending?api_key=${GiphyApiKey}&limit=3&rating=g&offset=${this.state.gifs.length}`
+            }
+            fetch(searchUrl,{method:"get"})
+            .then(response => response.json())
+            .then(data => 
+                {
+                    let gifs = this.state.gifs
+                    data.data.forEach(gif => {
+                        gifs = [...gifs, {small:gif["images"]["downsized_medium"]["url"],original:gif["images"]["original"]["url"]}]
+                    });
+                    let hasMore = false
+                    if(data.pagination.total_count > gifs.length){
+                        hasMore = true
+                    }
+                    this.setState({gifs:gifs, hasMore:hasMore})
+                })
+            .catch(function(err) {
+                console.error(` Err: ${err}`);
+            });
+        }, 1000)
+        
     }
     render() {
         let gifsList = this.state.gifs.map((gif, index) => {
@@ -216,6 +217,7 @@ class Home extends Component {
                                             value={this.state.gifQuery}
                                             onChange={this.handleGifQueryChange}
                                             autoFocus
+                                            onFocus={this.value=this.value}
                                             placeholder="Search…"
                                             style={myStyle.inputInput}
                                         />
@@ -261,11 +263,16 @@ class Home extends Component {
                                 </div>
                                 
                                 <DialogContent>
-                                    <Textarea
+                                    
+                                    <InputBase
+                                        style={{width:"100%"}}
                                         autoFocus
+                                        multiline
+                                        rows={4}
                                         id="post-input"
                                         placeholder="What's on your mind?"
                                         value={this.state.currentText}
+                                        onFocus={this.value=this.value}
                                         onChange={(e) => {this.setState({currentText:e.target.value})}}
                                     />
                                     
